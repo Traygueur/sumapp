@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
+import 'scrap.dart';
 
 class Authentification extends StatefulWidget {
   const Authentification({super.key});
@@ -27,10 +27,10 @@ class _AuthentificationState extends State<Authentification> {
     } else {
       print('Connexion réussie');
       print('Utilisateur connecté : ${response.user?.email}');
-      '''Navigator.push(
+      Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => HtmlFetcher()),
-      );''';
+      );
       // Tu peux utiliser 'response.user' pour obtenir les informations de l'utilisateur
       // Si tu veux la session : response.session
     }
@@ -65,10 +65,10 @@ class _AuthentificationState extends State<Authentification> {
                 password: passwordController.text
 
               );
-              '''Navigator.push(
+              Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LienNouvellePage()),
-              );''';
+                MaterialPageRoute(builder: (context) => HtmlFetcher()),
+              );
             }, child: Text("Créer un compte")),
           ],
         ),
