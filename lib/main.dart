@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'scrap.dart';
 
 
+
 void main()async{
   await Supabase.initialize(
     url: 'https://jqtwfuiwgxnfxdyfgyln.supabase.co',  // Remplace avec ton URL Supabase

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart' as html_parser;
+import 'scripts/request_script.dart';
 
 class HtmlFetcher extends StatefulWidget {
   @override
@@ -86,8 +87,6 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
         var contentElement = document.querySelector("div.gdl-blog-full");
         String content = contentElement != null ? contentElement.innerHtml.trim() : "Contenu non disponible";
 
-        print("\n====== ARTICLE EXTRAIT ======\n$title\n$content\n===========================\n"); // Debug pour voir ce qui est récupéré
-
         setState(() {
           articleTitles[article] = title;
           articleContents[article] = content;
@@ -105,9 +104,15 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ArticlePage(title: title, content: content),
+        builder: (context) => ArticlePage(title: title, content: content, url: url, updateContent: updateArticleContent),
       ),
     );
+  }
+
+  void updateArticleContent(String url, String newContent) {
+    setState(() {
+      articleContents[url] = newContent;
+    });
   }
 
   @override
@@ -148,20 +153,54 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
   }
 }
 
-class ArticlePage extends StatelessWidget {
+class ArticlePage extends StatefulWidget {
   final String title;
   final String content;
+  final String url;
+  final Function(String, String) updateContent;
 
-  ArticlePage({required this.title, required this.content});
+  ArticlePage({required this.title, required this.content, required this.url, required this.updateContent});
+
+  @override
+  _ArticlePageState createState() => _ArticlePageState();
+}
+
+class _ArticlePageState extends State<ArticlePage> {
+  String displayedContent = "";
+
+  @override
+  void initState() {
+    super.initState();
+    displayedContent = widget.content;
+  }
+
+  void summarizeArticle() async {
+    String summary = await MistralAPI.getSummary(widget.content);
+    setState(() {
+      displayedContent = summary;
+    });
+    widget.updateContent(widget.url, summary);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: SingleChildScrollView(
-          child: Text(content),
+      appBar: AppBar(title: Text(widget.title)),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(displayedContent),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: summarizeArticle,
+                child: Text("Résumé"),
+              ),
+            ),
+          ],
         ),
       ),
     );
