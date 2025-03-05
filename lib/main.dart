@@ -3,7 +3,7 @@ import 'package:sumapp/authentification.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'scrap.dart';
 import 'views/actualité_view.dart';
-
+import 'views/actuality_date_view.dart';
 
 void main()async{
   await Supabase.initialize(
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Actualite(),
+      home: ActualityDateView(),
     );
   }
 }
