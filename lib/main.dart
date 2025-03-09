@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sumapp/views/authentification_screenG.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
+import 'scrap.dart';
+import 'views/actualité_view.dart';
+import 'views/actuality_date_view.dart';
 
 void main()async{
   await Supabase.initialize(
