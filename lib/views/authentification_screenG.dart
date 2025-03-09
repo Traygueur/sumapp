@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sumapp/models/authentification.dart';
+import 'package:sumapp/views/actuality_date_view.dart';
 
 
 class Authentification extends StatefulWidget {
@@ -18,7 +19,17 @@ class _AuthentificationState extends State<Authentification> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("SumAPP Authentification")),
+      backgroundColor: Color(0xEAF6B936),
+      appBar: AppBar(
+        title: Text(
+          "SumApp Authentification",
+          style: TextStyle(
+            fontFamily: 'Poppins', // Le nom de la famille de la police
+            fontWeight: FontWeight.bold, // épaisseur de la police
+          ),
+        ),
+        backgroundColor: Color(0xFFFDB90C),
+      ),
       body: Padding(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.1),
         child: Center(
@@ -45,7 +56,11 @@ class _AuthentificationState extends State<Authentification> {
                     passwordController.text,
                   );
                   if (success) {
-                    // Navigator.pushNamed(context, '/home'); // Redirige vers la page d'accueil
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => ActualityDateView()),
+                          (route) => false, // Supprime toutes les routes précédentes
+                    );
                     print("Connexion réussi");
                   }
                 },
