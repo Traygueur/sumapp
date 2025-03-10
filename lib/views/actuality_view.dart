@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sumapp/views/navigation_drawer.dart';
+
 
 class Actualite extends StatelessWidget {
   const Actualite({super.key});
@@ -6,6 +8,7 @@ class Actualite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: NavDrawer(),
       appBar: AppBar(
         title: Text("Actualités du jour"),
         centerTitle: true,

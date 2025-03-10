@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sumapp/views/navigation_drawer.dart';
 
 class ActualityDateView extends StatefulWidget {
   const ActualityDateView({super.key});
@@ -14,6 +15,7 @@ class _ActualityDateViewState extends State<ActualityDateView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: NavDrawer(),
       appBar: AppBar(
         title: Text("Rechercher par date"),
         centerTitle: true,
