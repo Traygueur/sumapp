@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sumapp/gui_models/card_widget.dart';
 
 class ActualityDateView extends StatefulWidget {
   const ActualityDateView({super.key});
@@ -57,50 +58,8 @@ class _ActualityDateViewState extends State<ActualityDateView> {
               child: Text("Rechercher"),
             ),
             const SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 5, // Simule 5 articles
-                itemBuilder: (context, index) {
-                  return Card(
-                    elevation: 4,
-                    margin: const EdgeInsets.only(bottom: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Titre de l'article ${index + 1}",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque auctor...",
-                            style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 12),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              child: Text("Lire l'article"),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+
+            const ArticleList(),
           ],
         ),
       ),
