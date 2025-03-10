@@ -6,7 +6,9 @@ import 'package:html/parser.dart' as html_parser;
 import 'scripts/request_script.dart';
 
 
-Map<String, String> globalArticleTitles = {};
+Map<String, List<String>> globalArticleTitles = {};
+
+
 
 class HtmlFetcher extends StatefulWidget {
   @override
@@ -24,7 +26,7 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
   List<String> articleLinksMonde = [];
   Map<String, String> articleContentsMonde = {}; // Dictionnaire pour stocker les contenus des articles
   Map<String, String> articleDatesMonde = {};
-
+  List<List<String>> articleContentDate = [[],[]];
 
   @override
   void initState() {
@@ -57,7 +59,6 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
         });
       } else {
         setState(() {
-          globalArticleTitles = Map<String, String>.from(articleTitles);
           _statusMessage = "Erreur : ${response.statusCode}";
         });
         break;
@@ -66,8 +67,24 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
 
     await fetchArticleTitles();
     setState(() { _statusMessage = "Articles mis à jour";
-
+    sortArticlesByDate();
+    print(globalArticleTitles);
     });
+  }
+
+  void sortArticlesByDate() {
+    // Convertir les entrées du Map en liste
+    List<MapEntry<String, List<String>>> entries = globalArticleTitles.entries.toList();
+
+    // Trier la liste par date (en supposant que la date est au format "yyyy/MM/dd")
+    entries.sort((a, b) {
+      DateTime dateA = DateFormat("yyyy/MM/dd").parse(a.value[0]);
+      DateTime dateB = DateFormat("yyyy/MM/dd").parse(b.value[0]);
+      return dateB.compareTo(dateA); // ordre décroissant : les plus récents en premier
+    });
+
+    // Recréer le Map trié (ordre d'insertion préservé par LinkedHashMap)
+    globalArticleTitles = Map<String, List<String>>.fromEntries(entries);
   }
 
   void extractLinks(String html, String date) {
@@ -90,11 +107,11 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
   }
 
   Future<void> fetchArticleTitles() async {
-    List<Future<void>> requests = articleLinks.map((article) async {
+    for (String article in articleLinks) {
       final response = await http.get(Uri.parse(article));
+
       if (response.statusCode == 200) {
         var document = html_parser.parse(response.body);
-
 
         var titleElement = document.querySelector("h1.blog-title a");
         String title = titleElement != null ? titleElement.text.trim() : "Titre inconnu";
@@ -102,16 +119,29 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
         var contentElement = document.querySelector("div.gdl-blog-full");
         String content = contentElement != null ? contentElement.innerHtml.trim() : "Contenu non disponible";
 
+        String summary;
+        try {
+          print("🔵 Envoi de la requête à MistralAPI pour : $title");
+          summary = await MistralAPI.getSummary(content);
+          print("🟢 Réussi : Résumé reçu pour '$title'");
+        } catch (e) {
+          print("🔴 Erreur lors de l'appel à MistralAPI pour '$title' : $e");
+          summary = "Résumé non disponible";
+        }
+
         setState(() {
           articleTitles[article] = title;
           articleContents[article] = content;
+          globalArticleTitles[title] = [articleDates[article] ?? "", summary];
         });
-      }
-    }).toList();
 
-    await Future.wait(requests);
-    setState(() {});
+        // ✅ Attendre 4 secondes avant d'envoyer la prochaine requête
+        print("⏳ Attente de 4 secondes avant la prochaine requête...");
+        await Future.delayed(Duration(seconds: 1));
+      }
+    }
   }
+
 
   void openArticlePage(String url) {
     String title = articleTitles[url] ?? "Titre inconnu";
@@ -145,7 +175,6 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
       });
     }
     await fetchArticleMonde();
-    globalArticleTitles = Map<String, String>.from(articleTitles);
     setState(() { _statusMessage = "Articles mis à jour";
 
     });
@@ -219,11 +248,11 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
 
 
   Future<void> fetchArticleMonde() async {
-    List<Future<void>> requests = articleLinksMonde.map((article) async {
+    for (String article in articleLinksMonde) {
       final response = await http.get(Uri.parse(article));
+
       if (response.statusCode == 200) {
         var document = html_parser.parse(response.body);
-
 
         var titleElement = document.querySelector("h1.mb-small");
         String title = titleElement != null ? titleElement.text.trim() : "Titre inconnu";
@@ -231,15 +260,29 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
         var contentElement = document.querySelector("div.col-primary");
         String content = contentElement != null ? contentElement.innerHtml.trim() : "Contenu non disponible";
 
+        String summary;
+        try {
+          print("🔵 Envoi de la requête à MistralAPI pour : $title");
+          summary = await MistralAPI.getSummary(content);
+          print("🟢 Réussi : Résumé reçu pour '$title'");
+        } catch (e) {
+          print("🔴 Erreur lors de l'appel à MistralAPI pour '$title' : $e");
+          summary = "Résumé non disponible";
+        }
+
         setState(() {
           articleTitles[article] = title;
           articleContents[article] = content;
+          globalArticleTitles[title] = [articleDates[article] ?? "", summary];
         });
+
+        // ✅ Attendre 4 secondes avant d'envoyer la prochaine requête
+        print("⏳ Attente de 4 secondes avant la prochaine requête...");
+        await Future.delayed(Duration(seconds: 1));
       }
-    }).toList();
-    await Future.wait(requests);
-    setState(() {});
+    }
   }
+
 
 
 

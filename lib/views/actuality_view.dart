@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:sumapp/scrap.dart';
+import 'package:intl/intl.dart';
+import 'read_article_view.dart';
 
 class Actualite extends StatelessWidget {
   Actualite({super.key});
   @override
 
   Widget build(BuildContext context) {
-    final List<String> titleList = globalArticleTitles.values.toList();
-    final int articleCount = titleList.length >= 5 ? 5 : titleList.length;
+
+    String today = DateFormat("yyyy/MM/dd").format(DateTime.now());
+
+    List<String> titleList = globalArticleTitles.entries
+        .where((entry) => entry.value[0] == today)
+        .map((entry) => entry.key)
+        .toList();
+
+    final int articleCount = titleList.length;
     print(titleList);
     return Scaffold(
       appBar: AppBar(
@@ -19,6 +28,8 @@ class Actualite extends StatelessWidget {
         child: ListView.builder(
           itemCount: articleCount, // Simulation avec 5 articles
           itemBuilder: (context, index) {
+            String title = titleList[index];
+            String summary = globalArticleTitles[title]?[1] ?? "Résumé non disponible";
             return Card(
               elevation: 4,
               margin: const EdgeInsets.only(bottom: 16),
@@ -39,7 +50,7 @@ class Actualite extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque auctor...",
+                      globalArticleTitles[titleList[index]]?[1] ?? "Contenu non disponible",
                       style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
@@ -48,7 +59,18 @@ class Actualite extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerRight,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          // Navigation vers `ReadArticleView`
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReadArticleView(
+                                title: title,
+                                summary: summary,
+                              ),
+                            ),
+                          );
+                        },
                         child: Text("Lire l'article"),
                       ),
                     ),
