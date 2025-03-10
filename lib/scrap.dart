@@ -1,3 +1,5 @@
+import 'package:sumapp/views/actuality_date_view.dart';
+
 import 'views/actuality_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -300,7 +302,7 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Actualite()),
+                  MaterialPageRoute(builder: (context) => ActualityDateView()),
                 );
               },
               child: Text("Aller à la nouvelle page"),

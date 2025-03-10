@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sumapp/scrap.dart';
+import 'package:intl/intl.dart';
+import 'read_article_view.dart';
 
 class ActualityDateView extends StatefulWidget {
   const ActualityDateView({super.key});
@@ -13,6 +16,13 @@ class _ActualityDateViewState extends State<ActualityDateView> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> titleList = selectedDate != null
+        ? globalArticleTitles.entries
+        .where((entry) => entry.value[0] == DateFormat("yyyy/MM/dd").format(selectedDate!))
+        .map((entry) => entry.key)
+        .toList()
+        : [];
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Rechercher par date"),
@@ -24,6 +34,7 @@ class _ActualityDateViewState extends State<ActualityDateView> {
           children: [
             TextField(
               controller: _dateController,
+              readOnly: true, // Empêche la saisie manuelle
               decoration: InputDecoration(
                 labelText: "Sélectionner une date",
                 border: OutlineInputBorder(),
@@ -39,7 +50,7 @@ class _ActualityDateViewState extends State<ActualityDateView> {
                     if (pickedDate != null) {
                       setState(() {
                         selectedDate = pickedDate;
-                        _dateController.text = "${pickedDate.year}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.day.toString().padLeft(2, '0')}";
+                        _dateController.text = DateFormat("yyyy/MM/dd").format(pickedDate);
                       });
                     }
                   },
@@ -51,16 +62,21 @@ class _ActualityDateViewState extends State<ActualityDateView> {
               onPressed: () {
                 if (selectedDate != null) {
                   print("Recherche des articles pour la date : ${_dateController.text}");
-                  // Ici, tu pourras appeler une fonction pour récupérer les articles de cette date
+                  setState(() {}); // Mettre à jour la liste des articles affichés
                 }
               },
               child: Text("Rechercher"),
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
-                itemCount: 5, // Simule 5 articles
+              child: titleList.isEmpty
+                  ? Center(child: Text("Aucun article trouvé pour cette date."))
+                  : ListView.builder(
+                itemCount: titleList.length,
                 itemBuilder: (context, index) {
+                  String title = titleList[index];
+                  String summary = globalArticleTitles[title]?[1] ?? "Résumé non disponible";
+
                   return Card(
                     elevation: 4,
                     margin: const EdgeInsets.only(bottom: 16),
@@ -73,7 +89,7 @@ class _ActualityDateViewState extends State<ActualityDateView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Titre de l'article ${index + 1}",
+                            title,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -81,7 +97,7 @@ class _ActualityDateViewState extends State<ActualityDateView> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque auctor...",
+                            summary,
                             style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
@@ -90,7 +106,17 @@ class _ActualityDateViewState extends State<ActualityDateView> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ReadArticleView(
+                                      title: title,
+                                      summary: summary,
+                                    ),
+                                  ),
+                                );
+                              },
                               child: Text("Lire l'article"),
                             ),
                           ),
