@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 
 class ArticleList extends StatelessWidget {
-  final Map<String, String> titles;
+  final Map<String, List<String>> titles;
+  final String today;
 
   const ArticleList({
     super.key,
     required this.titles,
+    required this.today,
   });
 
   @override
   Widget build(BuildContext context) {
-    final List<String> titleList = titles.values.toList();
-    final int articleCount = titleList.length >= 5 ? 5 : titleList.length;
+    List<String> titleList = titles.entries
+        .where((entry) => entry.value[0] == today)
+        .map((entry) => entry.key)
+        .toList();
+    final int articleCount = titleList.length;
+
+    // final List<String> titleList = titles.values.toList();
+    // final int articleCount = titleList.length >= 5 ? 5 : titleList.length;
 
     return ListView.builder(
         itemCount: articleCount,
@@ -36,7 +44,7 @@ class ArticleList extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque auctor...",
+                    titles[titleList[index]]?[1] ?? "Contenu non disponible",
                     style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,

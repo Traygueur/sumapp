@@ -4,28 +4,27 @@ import 'package:intl/intl.dart';
 import 'read_article_view.dart';
 import 'package:sumapp/views/navigation_drawer.dart';
 
+import 'package:sumapp/gui_models/card_widget.dart';
+
+Map<String, List<String>> globalArticle = {
+  "title1" : ["2025/03/10", "summary"],
+  "title2" : ["2025/03/10", "summary"],
+};
 
 class Actualite extends StatelessWidget {
   Actualite({super.key});
 
-  void someFunction() async{
-    print("Lancé");
+  void sortedDateFunction() async{
     HtmlFetcher scraper = HtmlFetcher();
     await scraper.sortArticlesByDate();
   }
 
   @override
   Widget build(BuildContext context) {
-    someFunction();
+    sortedDateFunction();
     String today = "2025/03/10";//DateFormat("yyyy/MM/dd").format(DateTime.now());
 
-    List<String> titleList = globalArticleTitles.entries
-        .where((entry) => entry.value[0] == today)
-        .map((entry) => entry.key)
-        .toList();
-
-    final int articleCount = titleList.length;
-    print(titleList);
+    //final int articleCount = titleList.length;
     return Scaffold(
       drawer: NavDrawer(),
       appBar: AppBar(
@@ -34,7 +33,8 @@ class Actualite extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView.builder(
+        child: ArticleList(titles: globalArticle, today: today,)
+        /* ListView.builder(
           itemCount: articleCount, // Simulation avec 5 articles
           itemBuilder: (context, index) {
             String title = titleList[index];
@@ -88,7 +88,7 @@ class Actualite extends StatelessWidget {
               ),
             );
           },
-        ),
+        ), */
       ),
     );
   }
