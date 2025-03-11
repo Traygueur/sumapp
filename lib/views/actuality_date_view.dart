@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:sumapp/scrap.dart';
+import 'package:sumapp/views/navigation_drawer.dart';
+import 'package:sumapp/models/scrap.dart';
 import 'package:intl/intl.dart';
 import 'read_article_view.dart';
+import 'package:intl/intl.dart';
+import 'read_article_view.dart';
+
 
 class ActualityDateView extends StatefulWidget {
   const ActualityDateView({super.key});
@@ -24,6 +28,7 @@ class _ActualityDateViewState extends State<ActualityDateView> {
         : [];
 
     return Scaffold(
+      drawer: NavDrawer(),
       appBar: AppBar(
         title: Text("Rechercher par date"),
         centerTitle: true,

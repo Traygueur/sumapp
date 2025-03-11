@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sumapp/authentification.dart';
+import 'package:sumapp/views/authentification_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'scrap.dart';
+import 'models/scrap.dart';
 import 'views/actuality_view.dart';
 import 'views/actuality_date_view.dart';
 import 'package:intl/date_symbol_data_local.dart';

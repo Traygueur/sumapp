@@ -7,7 +7,7 @@ class MistralAPI {
   static const String url = 'https://api.mistral.ai/v1/chat/completions';
 
   static Future<String> getSummary(String articleContent) async {
-    final String prompt = "Résumé cet article :" + articleContent;
+    final String prompt = "Résume cet article :" + articleContent;
 
     final response = await http.post(
       Uri.parse(url),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sumapp/scrap.dart';
+import 'package:sumapp/models/scrap.dart';
 import 'package:intl/intl.dart';
 import 'read_article_view.dart';
+import 'package:sumapp/views/navigation_drawer.dart';
+
 
 class Actualite extends StatelessWidget {
   Actualite({super.key});
@@ -15,7 +17,7 @@ class Actualite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     someFunction();
-    String today = "2025/03/10BE";//DateFormat("yyyy/MM/dd").format(DateTime.now());
+    String today = "2025/03/10";//DateFormat("yyyy/MM/dd").format(DateTime.now());
 
     List<String> titleList = globalArticleTitles.entries
         .where((entry) => entry.value[0] == today)
@@ -25,6 +27,7 @@ class Actualite extends StatelessWidget {
     final int articleCount = titleList.length;
     print(titleList);
     return Scaffold(
+      drawer: NavDrawer(),
       appBar: AppBar(
         title: Text("Actualités du jour"),
         centerTitle: true,
