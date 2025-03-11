@@ -43,7 +43,6 @@ class _newsScreenState extends State<newsScreen> {
     if (mounted) {
       setState(() {
         text = utf8.decode(result.codeUnits);
-        print(text);
       });
     }
   }

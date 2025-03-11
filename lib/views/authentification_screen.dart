@@ -55,7 +55,6 @@ class _AuthentificationState extends State<Authentification> {
                     emailController.text,
                     passwordController.text,
                   );
-                  print(message);
                   if (message != "success") {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(message)),
@@ -76,7 +75,6 @@ class _AuthentificationState extends State<Authentification> {
                     emailController.text,
                     passwordController.text,
                   );
-                  print(message);
                   if (message != "success") {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(message)),

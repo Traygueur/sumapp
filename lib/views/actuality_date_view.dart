@@ -64,7 +64,7 @@ class _ActualityDateViewState extends State<ActualityDateView> {
             ElevatedButton(
               onPressed: () {
                 if (selectedDate != null) {
-                  print("Recherche des articles pour la date : ${_dateController.text}");
+                  // print("Recherche des articles pour la date : ${_dateController.text}");
                   setState(() {}); // Mettre à jour la liste des articles affichés
                 }
               },

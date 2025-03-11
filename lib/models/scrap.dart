@@ -20,7 +20,7 @@ class HtmlFetcher{
   Map<String, String> articleContents = {}; // Dictionnaire pour stocker les contenus des articles
   Map<String, String> articleDates = {};
   List<String> articleLinksMonde = [];
-  Map<String, String> articleContentsMonde = {}; // Dictionnaire pour stocker les contenus des articles
+  Map<String, String> articleContentsMonde = {}; // Dictionnaire pour stocker les contenus des articles de LeMonde
   Map<String, String> articleDatesMonde = {};
   List<List<String>> articleContentDate = [[],[]];
 
@@ -44,12 +44,8 @@ class HtmlFetcher{
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         extractLinks(response.body, date);
-      } else if (response.statusCode == 404) {
-        print("erreur 404");
       } else {
-          print("Erreur : ${response.statusCode}");
-
-        break;
+          break;
       }
     }
 
@@ -57,17 +53,17 @@ class HtmlFetcher{
   }
 
   sortArticlesByDate() {
-    // Convertir les entrées du Map en liste
+    // Convertion entrées de Map en liste
     List<MapEntry<String, List<String>>> entries = globalArticleTitles.entries.toList();
 
-    // Trier la liste par date (en supposant que la date est au format "yyyy/MM/dd")
+    // Trier la liste par date (format "yyyy/MM/dd")
     entries.sort((a, b) {
       DateTime dateA = DateFormat("yyyy/MM/dd").parse(a.value[0]);
       DateTime dateB = DateFormat("yyyy/MM/dd").parse(b.value[0]);
       return dateB.compareTo(dateA); // ordre décroissant : les plus récents en premier
     });
 
-    // Recréer le Map trié (ordre d'insertion préservé par LinkedHashMap)
+    // Recréer Map trié
     globalArticleTitles = Map<String, List<String>>.fromEntries(entries);
   }
 
@@ -105,22 +101,20 @@ class HtmlFetcher{
 
         String summary;
         try {
-          print("🔵 Envoi de la requête à MistralAPI pour : $title");
+          // print("🔵 Envoi de la requête à MistralAPI pour : $title");
           summary = await MistralAPI.getSummary(content);
-          print("🟢 Réussi : Résumé reçu pour '$title'");
+          // print("🟢 Réussi : Résumé reçu pour '$title'");
         } catch (e) {
-          print("🔴 Erreur lors de l'appel à MistralAPI pour '$title' : $e");
+          // print("🔴 Erreur lors de l'appel à MistralAPI pour '$title' : $e");
           summary = "Résumé non disponible";
         }
 
           articleTitles[article] = title;
-          print(articleTitles);
           articleContents[article] = content;
           String summaryUtf8 = utf8.decode(summary.codeUnits);
           globalArticleTitles[title] = [articleDates[article] ?? "", summaryUtf8];
 
-        // ✅ Attendre 4 secondes avant d'envoyer la prochaine requête
-        print("⏳ Attente de 4 secondes avant la prochaine requête...");
+        // print("Attente de 1 secondes avant la prochaine requête...");
         await Future.delayed(Duration(seconds: 1));
       }
     }
@@ -132,11 +126,6 @@ class HtmlFetcher{
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       extractArticlesFromLeMondeInformatique(response.body);
-    } else if (response.statusCode == 404) {
-      print("erreur 404");
-    } else {
-      print("Erreur : ${response.statusCode}");
-
     }
     await fetchArticleMonde();
   }
@@ -145,30 +134,26 @@ class HtmlFetcher{
   void extractArticlesFromLeMondeInformatique(String html) {
     var document = html_parser.parse(html);
     var articleDivs = document.querySelectorAll("div.col-sm-8.col-xs-7");
-    print(articleDivs);
 
     for (var div in articleDivs) {
-      // Extraction de la date depuis <span class="theme"><b>...</b></span>
+      // Extraction date depuis <span class="theme"><b>...</b></span>
       var dateElement = div.querySelector("span.theme b");
       String rawDate = dateElement != null ? dateElement.text.trim() : "";
-      print("Raw date: '$rawDate'");
 
-      // Supprimer le préfixe "le " s'il est présent
+      // Suppression préfixe "le " si présent
       String cleanedDate = rawDate.replaceFirst(RegExp(r'^le\s+'), '').trim();
-      print("Cleaned date: '$cleanedDate'");
 
-      // Conversion avec votre fonction convertDate
+      // Conversion convertDate
       String formattedDate = convertDate(cleanedDate);
-      print("Formatted date: '$formattedDate'");
 
-      // Extraction du lien depuis <a class="title" href="...">
+      // Extraction lien depuis <a class="title" href="...">
       var linkElement = div.querySelector("a.title");
       String link = linkElement != null ? linkElement.attributes['href'] ?? "" : "";
 
       if (link.isNotEmpty && cleanedDate.isNotEmpty) {
         if (!articleLinksMonde.contains(link)) {
           articleLinksMonde.add(link);
-          // Stocker la date formatée dans le Map des dates pour Le Monde
+          // Stocker date formatée dans Map (Le Monde)
           articleDates[link] = formattedDate;
         }
       }
@@ -176,7 +161,7 @@ class HtmlFetcher{
   }
 
   String convertDate(String dateText) {
-    // Mapping des mois en français
+    // Mapping des mois
     Map<String, String> moisMap = {
       "Janvier": "01",
       "Février": "02",
@@ -192,7 +177,6 @@ class HtmlFetcher{
       "Décembre": "12",
     };
 
-    // Découper la chaîne en trois parties : jour, mois, année
     List<String> parts = dateText.split(" ");
     if (parts.length != 3) return "Format invalide";
 
@@ -200,7 +184,7 @@ class HtmlFetcher{
     String month = moisMap[parts[1]] ?? "00"; // Convertir le mois en nombre
     String year = parts[2];
 
-    return "$year/$month/$day"; // Retourne la date au format yyyy/MM/dd
+    return "$year/$month/$day";
   }
 
 
@@ -223,7 +207,6 @@ class HtmlFetcher{
         try {
           summary = await MistralAPI.getSummary(content);
         } catch (e) {
-          print("Erreur lors de l'appel à MistralAPI pour '$title' : $e");
           summary = "Résumé non disponible";
         }
          articleTitles[article] = title;
