@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sumapp/views/authentification_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'models/scrap.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'views/actuality_view.dart';
 import 'views/actuality_date_view.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -10,9 +11,11 @@ import 'package:intl/date_symbol_data_local.dart';
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
 
+  await dotenv.load();
+
   await Supabase.initialize(
-    url: 'https://jqtwfuiwgxnfxdyfgyln.supabase.co',  // Remplace avec ton URL Supabase
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxdHdmdWl3Z3huZnhkeWZneWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1NzgwMzQsImV4cCI6MjA1NjE1NDAzNH0.LMVmbj5A8A7dbRJ4xRzh5JChbEzao6Bc6WkUXJZlgco',            // Remplace avec ta clé Anon
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
   runApp(MyApp());
