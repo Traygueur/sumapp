@@ -33,4 +33,32 @@ class MistralAPI {
       throw Exception('Erreur ${response.statusCode}: ${response.body}');
     }
   }
+
+  static Future<String> getNews(String content) async {
+    final String prompt = "Rédige un petit texte résumant tous les titres du jour suivant : $content";
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $apiKey',
+      },
+      body: jsonEncode({
+        'model': model,
+        'messages': [
+          {
+            'role': 'user',
+            'content': prompt,
+          },
+        ],
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['choices'][0]['message']['content']; // Récupération de la réponse
+    } else {
+      throw Exception('Erreur ${response.statusCode}: ${response.body}');
+    }
+  }
 }

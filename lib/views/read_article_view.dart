@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sumapp/gui_models/navigation_drawer.dart';
 
 class ReadArticleView extends StatelessWidget {
   final String title;
@@ -9,6 +10,7 @@ class ReadArticleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: NavDrawer(),
       appBar: AppBar(title: Text(title)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
