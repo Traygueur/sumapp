@@ -17,20 +17,6 @@ class ActualityDateView extends StatefulWidget {
 class _ActualityDateViewState extends State<ActualityDateView> {
   final TextEditingController _dateController = TextEditingController();
   DateTime? selectedDate;
-  @override
-  void initState() {
-    super.initState();
-    refreshArticles(); // Démarrer la mise à jour en temps réel
-  }
-
-  void refreshArticles() {
-    Future.delayed(Duration(seconds: 3), () {
-      if (mounted) {
-        setState(() {}); // Rafraîchir l'UI
-        refreshArticles(); // Relancer la mise à jour après un court délai
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
