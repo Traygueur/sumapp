@@ -51,30 +51,36 @@ class _AuthentificationState extends State<Authentification> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  bool success = await authService.loginWithEmailPassword(
+                  String message = await authService.loginWithEmailPassword(
                     emailController.text,
                     passwordController.text,
                   );
-                  if (success) {
+                  print(message);
+                  if (message != "success") {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(message)),
+                    );
+                  } else if (message == "success") {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => Actualite()),
                           (route) => false, // Supprime toutes les routes précédentes
                     );
-                    print("Connexion réussi");
                   }
                 },
                 child: Text("Se connecter"),
               ),
               ElevatedButton(
                 onPressed: () async {
-                  bool success = await authService.signUp(
+                  String message = await authService.signUp(
                     emailController.text,
                     passwordController.text,
                   );
-                  if (success) {
-                    // Navigator.pushNamed(context, '/welcome'); // Redirige vers une autre page
-                    print("Inscription réussi");
+                  print(message);
+                  if (message != "success") {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(message)),
+                    );
                   }
                 },
                 child: Text("Créer un compte"),
