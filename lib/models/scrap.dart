@@ -170,8 +170,6 @@ class HtmlFetcher{
           articleLinksMonde.add(link);
           // Stocker la date formatée dans le Map des dates pour Le Monde
           articleDates[link] = formattedDate;
-          print(articleDates);
-          print(articleLinksMonde);
         }
       }
     }
@@ -223,11 +221,9 @@ class HtmlFetcher{
 
         String summary;
         try {
-          print("🔵 Envoi de la requête à MistralAPI pour : $title");
           summary = await MistralAPI.getSummary(content);
-          print("🟢 Réussi : Résumé reçu pour '$title'");
         } catch (e) {
-          print("🔴 Erreur lors de l'appel à MistralAPI pour '$title' : $e");
+          print("Erreur lors de l'appel à MistralAPI pour '$title' : $e");
           summary = "Résumé non disponible";
         }
          articleTitles[article] = title;
@@ -235,9 +231,6 @@ class HtmlFetcher{
         String summaryUtf8 = utf8.decode(summary.codeUnits);
         globalArticleTitles[title] = [articleDates[article] ?? "", summaryUtf8];
 
-
-        // ✅ Attendre 4 secondes avant d'envoyer la prochaine requête
-        print("⏳ Attente de 4 secondes avant la prochaine requête...");
         await Future.delayed(Duration(seconds: 1));
       }
     }

@@ -1,14 +1,13 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class MistralAPI {
-  static const String apiKey = 'soQOlM2mOkPc92exxkpWsKlsqGEX6uKp'; // À stocker dans .env pour sécurité
+  static final String apiKey = dotenv.env['MISTRAL_API_KEY'] ?? ''; // Récupère la clé depuis .env
   static const String model = 'mistral-small-latest';
   static const String url = 'https://api.mistral.ai/v1/chat/completions';
-
   static Future<String> getSummary(String articleContent) async {
     final String prompt = "Résume cet article :" + articleContent;
-
     final response = await http.post(
       Uri.parse(url),
       headers: {
