@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:sumapp/views/navigation_drawer.dart';
+import 'package:sumapp/gui_models/navigation_drawer.dart';
 import 'package:sumapp/models/scrap.dart';
 import 'package:intl/intl.dart';
 import 'read_article_view.dart';
 import 'package:intl/intl.dart';
 import 'read_article_view.dart';
+import 'package:sumapp/gui_models/card_widget.dart';
 
 
 class ActualityDateView extends StatefulWidget {
@@ -20,12 +21,9 @@ class _ActualityDateViewState extends State<ActualityDateView> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> titleList = selectedDate != null
-        ? globalArticleTitles.entries
-        .where((entry) => entry.value[0] == DateFormat("yyyy/MM/dd").format(selectedDate!))
-        .map((entry) => entry.key)
-        .toList()
-        : [];
+    String selectedDateFormat = selectedDate != null
+      ? DateFormat("yyyy/MM/dd").format(selectedDate!)
+      : DateFormat("yyyy/MM/dd").format(DateTime.now());
 
     return Scaffold(
       drawer: NavDrawer(),
@@ -74,63 +72,7 @@ class _ActualityDateViewState extends State<ActualityDateView> {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: titleList.isEmpty
-                  ? Center(child: Text("Aucun article trouvé pour cette date."))
-                  : ListView.builder(
-                itemCount: titleList.length,
-                itemBuilder: (context, index) {
-                  String title = titleList[index];
-                  String summary = globalArticleTitles[title]?[1] ?? "Résumé non disponible";
-
-                  return Card(
-                    elevation: 4,
-                    margin: const EdgeInsets.only(bottom: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            summary,
-                            style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 12),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ReadArticleView(
-                                      title: title,
-                                      summary: summary,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Text("Lire l'article"),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+              child: ArticleList(titles: globalArticleTitles, day: selectedDateFormat,),
             ),
           ],
         ),

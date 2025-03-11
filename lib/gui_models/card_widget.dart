@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:sumapp/views/read_article_view.dart';
 
 class ArticleList extends StatelessWidget {
   final Map<String, List<String>> titles;
-  final String today;
+  final String day;
 
   const ArticleList({
     super.key,
     required this.titles,
-    required this.today,
+    required this.day,
   });
 
   @override
   Widget build(BuildContext context) {
     List<String> titleList = titles.entries
-        .where((entry) => entry.value[0] == today)
+        .where((entry) => entry.value[0] == day)
         .map((entry) => entry.key)
         .toList();
     final int articleCount = titleList.length;
-
-    // final List<String> titleList = titles.values.toList();
-    // final int articleCount = titleList.length >= 5 ? 5 : titleList.length;
 
     return ListView.builder(
         itemCount: articleCount,
@@ -53,7 +51,20 @@ class ArticleList extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerRight,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        String title = titleList[index];
+                        String summary = titles[title]?[1] ?? "Résumé non disponible";
+                        // Navigation vers `ReadArticleView`
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReadArticleView(
+                              title: title,
+                              summary: summary,
+                            ),
+                          ),
+                        );
+                      },
                       child: const Text("Lire l'article"),
                     ),
                   ),

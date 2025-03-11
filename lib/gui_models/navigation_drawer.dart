@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:sumapp/views/actuality_view.dart';
 import 'package:sumapp/views/actuality_date_view.dart';
+import 'package:sumapp/views/news_view.dart';
 
 // drawer: NavDrawer(), dans le widget Scaffold
 
@@ -20,6 +21,16 @@ class NavDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
+            leading: Icon(Icons.sunny),
+            title: Text('What’s news today?'),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => ActualityDateView()),
+              );
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.access_time_filled),
             title: Text('Actualité du jour'),
             onTap: () {
@@ -32,16 +43,6 @@ class NavDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.calendar_month),
             title: Text('Actualité par date'),
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => ActualityDateView()),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.account_tree_rounded),
-            title: Text('Actualité Saved'),
             onTap: () {
               Navigator.pushReplacement(
                 context,
