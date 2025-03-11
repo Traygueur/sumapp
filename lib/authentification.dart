@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sumapp/views/actuality_view.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'scrap.dart';
+import 'views/actuality_date_view.dart';
 
 class Authentification extends StatefulWidget {
   const Authentification({super.key});
@@ -29,7 +31,7 @@ class _AuthentificationState extends State<Authentification> {
       print('Utilisateur connecté : ${response.user?.email}');
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HtmlFetcher()),
+        MaterialPageRoute(builder: (context) => Actualite()),
       );
       // Tu peux utiliser 'response.user' pour obtenir les informations de l'utilisateur
       // Si tu veux la session : response.session
@@ -67,7 +69,7 @@ class _AuthentificationState extends State<Authentification> {
               );
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HtmlFetcher()),
+                MaterialPageRoute(builder: (context) => Actualite()),
               );
             }, child: Text("Créer un compte")),
           ],

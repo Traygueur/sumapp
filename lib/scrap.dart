@@ -10,14 +10,7 @@ import 'scripts/request_script.dart';
 
 Map<String, List<String>> globalArticleTitles = {};
 
-
-
-class HtmlFetcher extends StatefulWidget {
-  @override
-  _HtmlFetcherState createState() => _HtmlFetcherState();
-}
-
-class _HtmlFetcherState extends State<HtmlFetcher> {
+class HtmlFetcher{
   List<String> dates = [];
   String _htmlContent = "Appuie sur le bouton pour récupérer le code source";
   String _statusMessage = "";
@@ -30,12 +23,6 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
   Map<String, String> articleDatesMonde = {};
   List<List<String>> articleContentDate = [[],[]];
 
-  @override
-  void initState() {
-    super.initState();
-    generateDateList();
-    fetchHtml();
-  }
 
   void generateDateList() {
     DateTime now = DateTime.now();
@@ -55,26 +42,20 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         extractLinks(response.body, date);
+        print("yes");
       } else if (response.statusCode == 404) {
-        setState(() {
-          _statusMessage = "Aucun article trouvé pour certaines dates.";
-        });
+        print("erreur 404");
       } else {
-        setState(() {
-          _statusMessage = "Erreur : ${response.statusCode}";
-        });
+          print("Erreur : ${response.statusCode}");
+
         break;
       }
     }
 
     await fetchArticleTitles();
-    setState(() { _statusMessage = "Articles mis à jour";
-    sortArticlesByDate();
-    print(globalArticleTitles);
-    });
   }
 
-  void sortArticlesByDate() {
+  sortArticlesByDate() {
     // Convertir les entrées du Map en liste
     List<MapEntry<String, List<String>>> entries = globalArticleTitles.entries.toList();
 
@@ -131,11 +112,10 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
           summary = "Résumé non disponible";
         }
 
-        setState(() {
           articleTitles[article] = title;
           articleContents[article] = content;
           globalArticleTitles[title] = [articleDates[article] ?? "", summary];
-        });
+
 
         // ✅ Attendre 4 secondes avant d'envoyer la prochaine requête
         print("⏳ Attente de 4 secondes avant la prochaine requête...");
@@ -145,41 +125,18 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
   }
 
 
-  void openArticlePage(String url) {
-    String title = articleTitles[url] ?? "Titre inconnu";
-    String content = articleContents[url] ?? "Contenu non disponible";
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ArticlePage(title: title, content: content, url: url, updateContent: updateArticleContent),
-      ),
-    );
-  }
-
-  void updateArticleContent(String url, String newContent) {
-    setState(() {
-      articleContents[url] = newContent;
-    });
-  }
-
   Future<void> fetchHtmlLemonde() async {
     final url = 'https://www.lemondeinformatique.fr/securite-informatique-3.html';
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       extractArticlesFromLeMondeInformatique(response.body);
     } else if (response.statusCode == 404) {
-      setState(() {
-        _statusMessage = "Erreur 404";
-      });
+      print("erreur 404");
     } else {
-      setState(() {
-        _statusMessage = "Erreur : ${response.statusCode}";
-      });
+      print("Erreur : ${response.statusCode}");
+
     }
     await fetchArticleMonde();
-    setState(() { _statusMessage = "Articles mis à jour";
-
-    });
   }
 
 
@@ -271,12 +228,10 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
           print("🔴 Erreur lors de l'appel à MistralAPI pour '$title' : $e");
           summary = "Résumé non disponible";
         }
-
-        setState(() {
-          articleTitles[article] = title;
+         articleTitles[article] = title;
           articleContents[article] = content;
           globalArticleTitles[title] = [articleDates[article] ?? "", summary];
-        });
+
 
         // ✅ Attendre 4 secondes avant d'envoyer la prochaine requête
         print("⏳ Attente de 4 secondes avant la prochaine requête...");
@@ -284,105 +239,5 @@ class _HtmlFetcherState extends State<HtmlFetcher> {
       }
     }
   }
-
-
-
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Extracteur HTML")),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ActualityDateView()),
-                );
-              },
-              child: Text("Aller à la nouvelle page"),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(_statusMessage, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: articleTitles.entries.map((entry) => Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: ElevatedButton(
-                    onPressed: () => openArticlePage(entry.key),
-                    child: Text(entry.value, textAlign: TextAlign.center),
-                  ),
-                )).toList(),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
-class ArticlePage extends StatefulWidget {
-  final String title;
-  final String content;
-  final String url;
-  final Function(String, String) updateContent;
-
-  ArticlePage({required this.title, required this.content, required this.url, required this.updateContent});
-
-  @override
-  _ArticlePageState createState() => _ArticlePageState();
-}
-
-class _ArticlePageState extends State<ArticlePage> {
-  String displayedContent = "";
-
-  @override
-  void initState() {
-    super.initState();
-    displayedContent = widget.content;
-  }
-
-  void summarizeArticle() async {
-    String summary = await MistralAPI.getSummary(widget.content);
-    setState(() {
-      displayedContent = summary;
-    });
-    widget.updateContent(widget.url, summary);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(displayedContent),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: summarizeArticle,
-                child: Text("Résumé"),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

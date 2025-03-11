@@ -5,11 +5,17 @@ import 'read_article_view.dart';
 
 class Actualite extends StatelessWidget {
   Actualite({super.key});
+
+  void someFunction() async{
+    print("Lancé");
+    HtmlFetcher scraper = HtmlFetcher();
+    await scraper.sortArticlesByDate();
+  }
+
   @override
-
   Widget build(BuildContext context) {
-
-    String today = DateFormat("yyyy/MM/dd").format(DateTime.now());
+    someFunction();
+    String today = "2025/03/10BE";//DateFormat("yyyy/MM/dd").format(DateTime.now());
 
     List<String> titleList = globalArticleTitles.entries
         .where((entry) => entry.value[0] == today)
