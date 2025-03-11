@@ -3,7 +3,7 @@ import '../views/actuality_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart' as html_parser;
-import '../scripts/request_script.dart';
+import 'request_script.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
@@ -37,14 +37,13 @@ class HtmlFetcher{
     articleTitles.clear();
     articleContents.clear();
     fetchHtmlLemonde();
-
+    generateDateList();
 
     for (String date in dates) {
       final url = 'https://www.zataz.com/$date';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         extractLinks(response.body, date);
-        print("yes");
       } else if (response.statusCode == 404) {
         print("erreur 404");
       } else {
