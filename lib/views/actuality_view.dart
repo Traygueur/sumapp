@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:sumapp/gui_models/card_widget.dart';
 import 'package:sumapp/scrap.dart';
 
 class Actualite extends StatelessWidget {
+  final Map<String, String> globalArticleTitles = {
+    'test': 'summary',
+    'test2': 'summary2',
+  };
   Actualite({super.key});
   @override
 
   Widget build(BuildContext context) {
-    final List<String> titleList = globalArticleTitles.values.toList();
-    final int articleCount = titleList.length >= 5 ? 5 : titleList.length;
-    print(titleList);
+    // final List<String> titleList = globalArticleTitles.values.toList();
+    // final int articleCount = titleList.length >= 5 ? 5 : titleList.length;
+    // print(titleList);
     return Scaffold(
       appBar: AppBar(
         title: Text("Actualités du jour"),
@@ -16,8 +21,15 @@ class Actualite extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView.builder(
-          itemCount: articleCount, // Simulation avec 5 articles
+        child: Column(
+          children: [
+            Expanded(
+              child: ArticleList(titles: globalArticleTitles),
+            ),
+          ],
+        ),
+        /* child: ListView.builder(
+          itemCount: articleCount,
           itemBuilder: (context, index) {
             return Card(
               elevation: 4,
@@ -57,7 +69,7 @@ class Actualite extends StatelessWidget {
               ),
             );
           },
-        ),
+        ), */
       ),
     );
   }

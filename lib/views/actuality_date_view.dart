@@ -59,7 +59,7 @@ class _ActualityDateViewState extends State<ActualityDateView> {
             ),
             const SizedBox(height: 20),
 
-            const ArticleList(),
+            // const ArticleList(),
           ],
         ),
       ),

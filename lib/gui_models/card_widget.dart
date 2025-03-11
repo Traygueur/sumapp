@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 
 class ArticleList extends StatelessWidget {
-  final int itemCount;
+  final Map<String, String> titles;
 
-  const ArticleList({super.key, this.itemCount = 8});
+  const ArticleList({
+    super.key,
+    required this.titles,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: itemCount,
+    final List<String> titleList = titles.values.toList();
+    final int articleCount = titleList.length >= 5 ? 5 : titleList.length;
+
+    return ListView.builder(
+        itemCount: articleCount,
         itemBuilder: (context, index) {
           return Card(
             elevation: 4,
@@ -23,7 +28,7 @@ class ArticleList extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Titre de l'article ${index + 1}",
+                    titleList[index].toString(),
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -49,7 +54,6 @@ class ArticleList extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
+      );
   }
 }
