@@ -30,7 +30,7 @@ class AuthService {
       }
 
       if (response.user?.identities?.isEmpty ?? true) {
-        return "Email déjà utilisé.";
+        return "Mail already used.";
       }
 
       return 'success';

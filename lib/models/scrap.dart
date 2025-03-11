@@ -1,12 +1,11 @@
 import 'package:sumapp/views/actuality_date_view.dart';
 import '../views/actuality_view.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart' as html_parser;
 import '../scripts/request_script.dart';
 import 'dart:convert';
-
+import 'package:flutter/material.dart';
 
 
 
@@ -34,10 +33,11 @@ class HtmlFetcher{
   }
 
   Future<void> fetchHtml() async {
-    fetchHtmlLemonde();
     articleLinks.clear();
     articleTitles.clear();
     articleContents.clear();
+    fetchHtmlLemonde();
+
 
     for (String date in dates) {
       final url = 'https://www.zataz.com/$date';
@@ -115,10 +115,10 @@ class HtmlFetcher{
         }
 
           articleTitles[article] = title;
+          print(articleTitles);
           articleContents[article] = content;
-        String summaryUtf8 = utf8.decode(summary.codeUnits);
-        globalArticleTitles[title] = [articleDates[article] ?? "", summaryUtf8];
-
+          String summaryUtf8 = utf8.decode(summary.codeUnits);
+          globalArticleTitles[title] = [articleDates[article] ?? "", summaryUtf8];
 
         // ✅ Attendre 4 secondes avant d'envoyer la prochaine requête
         print("⏳ Attente de 4 secondes avant la prochaine requête...");
