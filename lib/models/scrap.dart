@@ -1,11 +1,13 @@
 import 'package:sumapp/views/actuality_date_view.dart';
-
 import '../views/actuality_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart' as html_parser;
 import '../scripts/request_script.dart';
+import 'dart:convert';
+
+
 
 
 Map<String, List<String>> globalArticleTitles = {};
@@ -114,7 +116,8 @@ class HtmlFetcher{
 
           articleTitles[article] = title;
           articleContents[article] = content;
-          globalArticleTitles[title] = [articleDates[article] ?? "", summary];
+        String summaryUtf8 = utf8.decode(summary.codeUnits);
+        globalArticleTitles[title] = [articleDates[article] ?? "", summaryUtf8];
 
 
         // ✅ Attendre 4 secondes avant d'envoyer la prochaine requête
@@ -230,7 +233,8 @@ class HtmlFetcher{
         }
          articleTitles[article] = title;
           articleContents[article] = content;
-          globalArticleTitles[title] = [articleDates[article] ?? "", summary];
+        String summaryUtf8 = utf8.decode(summary.codeUnits);
+        globalArticleTitles[title] = [articleDates[article] ?? "", summaryUtf8];
 
 
         // ✅ Attendre 4 secondes avant d'envoyer la prochaine requête
