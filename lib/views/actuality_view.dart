@@ -4,16 +4,34 @@ import 'package:intl/intl.dart';
 import 'read_article_view.dart';
 import 'package:sumapp/views/navigation_drawer.dart';
 
+class Actualite extends StatefulWidget {
+  const Actualite({super.key});
 
-class Actualite extends StatelessWidget {
-  Actualite({super.key});
+  @override
+  State<Actualite> createState() => _ActualiteState();
+}
 
+class _ActualiteState extends State<Actualite> {
   void someFunction() async{
     print("Lancé");
     HtmlFetcher scraper = HtmlFetcher();
     await scraper.sortArticlesByDate();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    refreshArticles(); // Démarrer la mise à jour en temps réel
+  }
+
+  void refreshArticles() {
+    Future.delayed(Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {}); // Rafraîchir l'UI
+        refreshArticles(); // Relancer la mise à jour après un court délai
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     someFunction();
@@ -93,3 +111,5 @@ class Actualite extends StatelessWidget {
     );
   }
 }
+
+
