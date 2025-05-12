@@ -6,7 +6,7 @@ L'actualité Cyber dans une application compatible android et windows.
 1. [Présentation](#présentation)
 2. [Installation](#installation)
 3. [Utilisation](#utilisation)
-4. [Fonctionnalités](#fonctionnalites)
+4. [Fonctionnalités](#fonctionnalités)
 5. [Auteurs](#auteurs)
 
 
